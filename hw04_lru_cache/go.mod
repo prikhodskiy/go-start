@@ -1,6 +1,6 @@
-module github.com/fixme_my_friend/hw04_lru_cache
+module github.com/prikhodskiy/go-start/hw04_lru_cache
 
-go 1.19
+go 1.24
 
 require github.com/stretchr/testify v1.7.0
 

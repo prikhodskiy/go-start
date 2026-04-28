@@ -48,4 +48,55 @@ func TestList(t *testing.T) {
 		}
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
 	})
+
+	t.Run("remove from front and back", func(t *testing.T) {
+		l := NewList()
+
+		front := l.PushBack(1)   // [1]
+		middle1 := l.PushBack(2) // [1, 2]
+		l.PushBack(3)            // [1, 2, 3]
+		back := l.PushBack(4)    // [1, 2, 3, 4]
+
+		require.Equal(t, 4, l.Len())
+
+		l.Remove(front) // [2, 3, 4]
+		require.Equal(t, 3, l.Len())
+		require.Equal(t, 2, l.Front().Value)
+		require.Equal(t, 4, l.Back().Value)
+
+		l.Remove(back) // [2, 3]
+		require.Equal(t, 2, l.Len())
+		require.Equal(t, 2, l.Front().Value)
+		require.Equal(t, 3, l.Back().Value)
+
+		l.Remove(middle1) // [3]
+		require.Equal(t, 1, l.Len())
+		require.Equal(t, 3, l.Front().Value)
+		require.Equal(t, 3, l.Back().Value)
+		require.Nil(t, l.Front().Prev)
+		require.Nil(t, l.Front().Next)
+	})
+
+	t.Run("prev pointer chain", func(t *testing.T) {
+		l := NewList()
+
+		l.PushBack(10)
+		l.PushBack(20)
+		l.PushBack(30)
+		l.PushBack(40)
+
+		elems := make([]int, 0, l.Len())
+		for i := l.Back(); i != nil; i = i.Prev {
+			elems = append(elems, i.Value.(int))
+		}
+		require.Equal(t, []int{40, 30, 20, 10}, elems)
+
+		l.MoveToFront(l.Back()) // [40, 10, 20, 30]
+
+		elems = make([]int, 0, l.Len())
+		for i := l.Back(); i != nil; i = i.Prev {
+			elems = append(elems, i.Value.(int))
+		}
+		require.Equal(t, []int{30, 20, 10, 40}, elems)
+	})
 }
